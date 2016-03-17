@@ -1,6 +1,6 @@
 {
   "name": "helpeth",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Help (with) Ethereum. Purists' commandline tool for key and transaction management.",
   "bin": {
     "helpeth": "./helpeth"
@@ -33,6 +33,6 @@
     "yargs": "^4.3.1"
   },
   "yargs": {
-     "parse-numbers": false
+    "parse-numbers": false
   }
 }
