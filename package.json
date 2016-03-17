@@ -1,0 +1,35 @@
+{
+  "name": "helpeth",
+  "version": "0.1.0",
+  "description": "Help (with) Ethereum. Purists' commandline tool for key and transaction management.",
+  "bin": {
+    "helpeth": "./helpeth"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/axic/helpeth.git"
+  },
+  "keywords": [
+    "ethereum",
+    "wallet",
+    "keys",
+    "signing"
+  ],
+  "author": "Alex Beregszaszi <alex@rtfs.hu>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/axic/helpeth/issues"
+  },
+  "homepage": "https://github.com/axic/helpeth#readme",
+  "dependencies": {
+    "ethereumjs-icap": "^0.2.0",
+    "ethereumjs-tx": "^1.1.1",
+    "ethereumjs-util": "^4.1.0",
+    "ethereumjs-wallet": "^0.4.0",
+    "prompt-sync": "^4.0.4",
+    "yargs": "^4.3.1"
+  }
+}

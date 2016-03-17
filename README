@@ -1,0 +1,5 @@
+# helpeth
+
+Help (with) Ethereum. Purists' commandline tool for key and transaction management.
+
+It uses [ethereumjs-wallet](https://github.com/axic/ethereumjs-wallet) and [ethereumjs-tx](https://github.com/ethereumjs/ethereumjs-tx).

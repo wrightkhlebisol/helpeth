@@ -1,0 +1,138 @@
+#!/usr/bin/env node
+
+var fs = require('fs')
+var prompt = require('prompt-sync')()
+var ethWallet = require('ethereumjs-wallet')
+var ethICAP = require('ethereumjs-icap')
+
+var yargs = require('yargs')
+  .usage('Usage: $0 [command]')
+  .option('p', {
+    alias: 'private',
+    describe: 'Private key as a hex string',
+    type: 'string'
+  })
+  .option('password', {
+    describe: 'Password for the private key',
+    type: 'string'
+  })
+  .option('password-prompt', {
+    describe: 'Prompt for the private key password',
+    type: 'boolean'
+  })
+  .option('k', {
+    alias: 'keyfile',
+    describe: 'Encoded key file',
+    type: 'string',
+    normalize: true
+  })
+  .option('show-private', {
+    describe: 'Show private key details',
+    type: 'boolean'
+  })
+  .global([ 'p', 'k', 'password', 'password-prompt', 'show-private' ])
+  .command('keyGenerate [format]', 'Generate new key')
+  .command('keyConvert', 'Convert a key to V3 keystore format')
+  .command('keyDetails', 'Print key details')
+  .strict()
+  .version()
+  .showHelpOnFail(false, 'Specify --help for available options')
+  .help()
+  .demand(1, 'Must provide a command')
+
+var argv = yargs.argv
+var command = argv._[0]
+
+function abort (msg) {
+  console.log(msg || 'Error occured')
+  process.exit(1)
+}
+
+function ensurePrivateKey () {
+  if (!argv.p && !argv.k) {
+    abort('A private key is mandatory for this operation')
+  }
+}
+
+function askPassword () {
+  return prompt('Password: ', { echo: '*' })
+}
+
+function ensurePassword () {
+  if (argv.password) {
+    return argv.password
+  } else if (argv.passwordPrompt) {
+    var password = askPassword()
+    if (!password) {
+      abort('A password is mandatory for this operation')
+    } else {
+      return password
+    }
+  } else {
+    abort('A password is mandatory for this operation')
+  }
+}
+
+function loadWallet () {
+  ensurePrivateKey()
+
+  var wallet
+  if (argv.private) {
+    wallet = ethWallet.fromPrivateKey(argv.private)
+  } else if (argv.keyfile) {
+    var private = fs.readFileSync(argv.keyfile).toString()
+    var password = ensurePassword()
+    wallet = ethWallet.fromV3(private, password, true)
+  }
+
+  return wallet
+}
+
+function printWalletDetails (wallet, private) {
+  console.log('Address: ' + wallet.getAddressString())
+  console.log('Address (checksum): ' + wallet.getChecksumAddressString())
+  console.log('ICAP: ' + ethICAP.fromAddress(wallet.getAddressString(), true, true))
+  console.log('Public key: ' + wallet.getPublicKeyString())
+  if (argv.showPrivate || private) {
+    console.log('Private key: ' + wallet.getPrivateKeyString())
+  }
+}
+
+function saveWalletV3 (wallet) {
+  var password = ensurePassword()
+  var v3 = wallet.toV3String(password)
+  var filename = wallet.getV3Filename()
+
+  fs.writeFileSync(filename, new Buffer(v3))
+  console.log('Key saved as ' + filename)
+}
+
+switch (command) {
+  case 'keyGenerate':
+    var wallet = ethWallet.generate()
+
+    switch (argv.format) {
+      case 'v3':
+        printWalletDetails(wallet)
+        saveWalletV3(wallet)
+        break
+
+      case 'raw':
+      default:
+        printWalletDetails(wallet, true)
+        break
+    }
+    break
+
+  case 'keyDetails':
+    var wallet = loadWallet()
+
+    printWalletDetails(wallet)
+    break
+
+  case 'keyConvert':
+    var wallet = loadWallet()
+
+    saveWalletV3(wallet)    
+    break
+}
