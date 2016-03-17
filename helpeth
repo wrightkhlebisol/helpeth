@@ -32,6 +32,7 @@ var yargs = require('yargs')
     type: 'boolean'
   })
   .global([ 'p', 'k', 'password', 'password-prompt', 'show-private' ])
+  .command('signMessage <message>', 'Sign a message')
   .command('keyGenerate [format]', 'Generate new key')
   .command('keyConvert', 'Convert a key to V3 keystore format')
   .command('keyDetails', 'Print key details')
@@ -135,5 +136,20 @@ switch (command) {
     var wallet = loadWallet()
 
     saveWalletV3(wallet)    
+    break
+
+  case 'signMessage':
+    var wallet = loadWallet()
+
+    // NOTE: geth internally accepts any input and zero-pads it
+    var msg = ethUtil.sha3(ethUtil.toBuffer(argv.message))
+
+    var sig = ethUtil.ecsign(msg, wallet.getPrivateKey())
+
+    // geth (and the RPC eth_sign method) uses the 65 byte format used by Bitcoin
+    // FIXME: this might change in the future - https://github.com/ethereum/go-ethereum/issues/2053
+    sig = '0x' + Buffer.concat([ sig.r, sig.s, ethUtil.toBuffer(sig.v - 27) ]).toString('hex')
+
+    console.log('The signature: ' + sig)
     break
 }
