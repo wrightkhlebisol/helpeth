@@ -89,20 +89,20 @@ function loadWallet () {
   if (argv.private) {
     wallet = ethWallet.fromPrivateKey(ethUtil.toBuffer(argv.private))
   } else if (argv.keyfile) {
-    var private = fs.readFileSync(argv.keyfile).toString()
+    var keyfile = fs.readFileSync(argv.keyfile).toString()
     var password = ensurePassword()
-    wallet = ethWallet.fromV3(private, password, true)
+    wallet = ethWallet.fromV3(keyfile, password, true)
   }
 
   return wallet
 }
 
-function printWalletDetails (wallet, private) {
+function printWalletDetails (wallet, showPrivate) {
   console.log('Address: ' + wallet.getAddressString())
   console.log('Address (checksum): ' + wallet.getChecksumAddressString())
   console.log('ICAP: ' + ethICAP.fromAddress(wallet.getAddressString(), true, true))
   console.log('Public key: ' + wallet.getPublicKeyString())
-  if (argv.showPrivate || private) {
+  if (argv.showPrivate || showPrivate) {
     console.log('Private key: ' + wallet.getPrivateKeyString())
   }
 }
@@ -116,9 +116,11 @@ function saveWalletV3 (wallet) {
   console.log('Key saved as ' + filename)
 }
 
+var wallet
+
 switch (command) {
   case 'keyGenerate':
-    var wallet = ethWallet.generate()
+    wallet = ethWallet.generate()
 
     switch (argv.format) {
       case 'v3':
@@ -134,19 +136,19 @@ switch (command) {
     break
 
   case 'keyDetails':
-    var wallet = loadWallet()
+    wallet = loadWallet()
 
     printWalletDetails(wallet)
     break
 
   case 'keyConvert':
-    var wallet = loadWallet()
+    wallet = loadWallet()
 
-    saveWalletV3(wallet)    
+    saveWalletV3(wallet)
     break
 
   case 'signMessage':
-    var wallet = loadWallet()
+    wallet = loadWallet()
 
     // NOTE: geth internally accepts any input and zero-pads it
     var msg = ethUtil.sha3(ethUtil.toBuffer(argv.message))
@@ -182,6 +184,7 @@ switch (command) {
     console.log('Gas limit: ' + gasLimit)
     console.log('Gas price: ' + gasPrice)
 
+    /* eslint-disable new-cap */
     var tx = new ethTx({
       nonce: nonce,
       to: to,
@@ -190,8 +193,9 @@ switch (command) {
       gasLimit: gasLimit,
       gasPrice: gasPrice
     })
+    /* eslint-enable new-cap */
 
-    var wallet = loadWallet()
+    wallet = loadWallet()
     tx.sign(wallet.getPrivateKey())
 
     console.log('The signed transaction: ' + bufferToHex(tx.serialize()))
