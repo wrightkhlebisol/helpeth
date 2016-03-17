@@ -148,6 +148,8 @@ switch (command) {
 
     // NOTE: geth internally accepts any input and zero-pads it
     var msg = ethUtil.sha3(ethUtil.toBuffer(argv.message))
+    console.log('Input message: ' + argv.message)
+    console.log('Message hash (Keccak): ' + bufferToHex(msg))
 
     var sig = ethUtil.ecsign(msg, wallet.getPrivateKey())
 
