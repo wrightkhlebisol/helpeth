@@ -4,6 +4,7 @@ var fs = require('fs')
 var prompt = require('prompt-sync')()
 var ethWallet = require('ethereumjs-wallet')
 var ethICAP = require('ethereumjs-icap')
+var ethUtil = require('ethereumjs-util')
 
 var yargs = require('yargs')
   .usage('Usage: $0 [command]')
@@ -78,7 +79,7 @@ function loadWallet () {
 
   var wallet
   if (argv.private) {
-    wallet = ethWallet.fromPrivateKey(argv.private)
+    wallet = ethWallet.fromPrivateKey(ethUtil.toBuffer(argv.private))
   } else if (argv.keyfile) {
     var private = fs.readFileSync(argv.keyfile).toString()
     var password = ensurePassword()
