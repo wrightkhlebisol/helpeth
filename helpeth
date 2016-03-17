@@ -5,6 +5,7 @@ var prompt = require('prompt-sync')()
 var ethWallet = require('ethereumjs-wallet')
 var ethICAP = require('ethereumjs-icap')
 var ethUtil = require('ethereumjs-util')
+var ethTx = require('ethereumjs-tx')
 
 var yargs = require('yargs')
   .usage('Usage: $0 [command]')
@@ -33,6 +34,7 @@ var yargs = require('yargs')
   })
   .global([ 'p', 'k', 'password', 'password-prompt', 'show-private' ])
   .command('signMessage <message>', 'Sign a message')
+  .command('createTx <nonce> <to> <value> <data> <gasLimit> <gasPrice>', 'Sign a transaction')
   .command('keyGenerate [format]', 'Generate new key')
   .command('keyConvert', 'Convert a key to V3 keystore format')
   .command('keyDetails', 'Print key details')
@@ -158,5 +160,40 @@ switch (command) {
     sig = bufferToHex(Buffer.concat([ sig.r, sig.s, ethUtil.toBuffer(sig.v - 27) ]))
 
     console.log('The signature: ' + sig)
+    break
+
+  case 'createTx':
+    function shadyparser (input) {
+      return bufferToHex(ethUtil.toBuffer(input))
+    }
+
+    // FIXME: validate inputs
+    var nonce = shadyparser(argv.nonce)
+    var to = shadyparser(argv.to)
+    var value = shadyparser(argv.value)
+    var data = shadyparser(argv.data)
+    var gasLimit = shadyparser(argv.gasLimit)
+    var gasPrice = shadyparser(argv.gasPrice)
+
+    console.log('Nonce: ' + nonce)
+    console.log('To: ' + to)
+    console.log('Value: ' + value)
+    console.log('Data: ' + data)
+    console.log('Gas limit: ' + gasLimit)
+    console.log('Gas price: ' + gasPrice)
+
+    var tx = new ethTx({
+      nonce: nonce,
+      to: to,
+      value: value,
+      data: data,
+      gasLimit: gasLimit,
+      gasPrice: gasPrice
+    })
+
+    var wallet = loadWallet()
+    tx.sign(wallet.getPrivateKey())
+
+    console.log('The signed transaction: ' + bufferToHex(tx.serialize()))
     break
 }
