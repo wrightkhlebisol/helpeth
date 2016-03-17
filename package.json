@@ -10,7 +10,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/axic/helpeth.git"
+    "url": "git+https://github.com/ethereumjs/helpeth.git"
   },
   "keywords": [
     "ethereum",
@@ -21,9 +21,9 @@
   "author": "Alex Beregszaszi <alex@rtfs.hu>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/axic/helpeth/issues"
+    "url": "https://github.com/ethereumjs/helpeth/issues"
   },
-  "homepage": "https://github.com/axic/helpeth#readme",
+  "homepage": "https://github.com/ethereumjs/helpeth#readme",
   "dependencies": {
     "ethereumjs-icap": "^0.2.0",
     "ethereumjs-tx": "^1.1.1",
