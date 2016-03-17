@@ -38,6 +38,7 @@ var yargs = require('yargs')
   .command('keyGenerate [format]', 'Generate new key')
   .command('keyConvert', 'Convert a key to V3 keystore format')
   .command('keyDetails', 'Print key details')
+  .command('addressDetails <address>', 'Print details about an address')
   .strict()
   .version()
   .showHelpOnFail(false, 'Specify --help for available options')
@@ -97,10 +98,14 @@ function loadWallet () {
   return wallet
 }
 
+function printAddressDetails (address) {
+  console.log('Address: ' + address)
+  console.log('Address (checksum): ' + ethUtil.toChecksumAddress(address))
+  console.log('ICAP: ' + ethICAP.fromAddress(address, true, true))
+}
+
 function printWalletDetails (wallet, showPrivate) {
-  console.log('Address: ' + wallet.getAddressString())
-  console.log('Address (checksum): ' + wallet.getChecksumAddressString())
-  console.log('ICAP: ' + ethICAP.fromAddress(wallet.getAddressString(), true, true))
+  printAddressDetails(wallet.getAddressString())
   console.log('Public key: ' + wallet.getPublicKeyString())
   if (argv.showPrivate || showPrivate) {
     console.log('Private key: ' + wallet.getPrivateKeyString())
@@ -199,5 +204,26 @@ switch (command) {
     tx.sign(wallet.getPrivateKey())
 
     console.log('The signed transaction: ' + bufferToHex(tx.serialize()))
+    break
+
+  case 'addressDetails':
+    var address = argv.address
+    if (ethICAP.isICAP(address)) {
+      try {
+        address = ethICAP.toAddress(address)
+      } catch (e) {
+        abort('The address supplied is an Indirect ICAP')
+      }
+    } else if (!/^0?x?[0-9a-fA-F]{40}$/i.test(address)) {
+      abort('Invalid address')
+    } else {
+      address = address.toLowerCase()
+
+      if ((address !== argv.address) && !ethUtil.isValidChecksumAddress(argv.address)) {
+        console.warn('The supplied address failed the checksum test. It might be invalid.')
+      }
+    }
+
+    printAddressDetails(address)
     break
 }
