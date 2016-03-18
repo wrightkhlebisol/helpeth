@@ -48,11 +48,6 @@ var yargs = require('yargs')
 var argv = yargs.argv
 var command = argv._[0]
 
-// New ethereumjs-util release will eliminate this
-function bufferToHex (buf) {
-  return '0x' + buf.toString('hex')
-}
-
 function abort (msg) {
   console.log(msg || 'Error occured')
   process.exit(1)
@@ -158,20 +153,20 @@ switch (command) {
     // NOTE: geth internally accepts any input and zero-pads it
     var msg = ethUtil.sha3(ethUtil.toBuffer(argv.message))
     console.log('Input message: ' + argv.message)
-    console.log('Message hash (Keccak): ' + bufferToHex(msg))
+    console.log('Message hash (Keccak): ' + ethUtil.bufferToHex(msg))
 
     var sig = ethUtil.ecsign(msg, wallet.getPrivateKey())
 
     // geth (and the RPC eth_sign method) uses the 65 byte format used by Bitcoin
     // FIXME: this might change in the future - https://github.com/ethereum/go-ethereum/issues/2053
-    sig = bufferToHex(Buffer.concat([ sig.r, sig.s, ethUtil.toBuffer(sig.v - 27) ]))
+    sig = ethUtil.bufferToHex(Buffer.concat([ sig.r, sig.s, ethUtil.toBuffer(sig.v - 27) ]))
 
     console.log('The signature: ' + sig)
     break
 
   case 'createTx':
     function shadyparser (input) {
-      return bufferToHex(ethUtil.toBuffer(input))
+      return ethUtil.bufferToHex(ethUtil.toBuffer(input))
     }
 
     // FIXME: validate inputs
@@ -203,7 +198,7 @@ switch (command) {
     wallet = loadWallet()
     tx.sign(wallet.getPrivateKey())
 
-    console.log('The signed transaction: ' + bufferToHex(tx.serialize()))
+    console.log('The signed transaction: ' + ethUtil.bufferToHex(tx.serialize()))
     break
 
   case 'addressDetails':
