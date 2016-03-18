@@ -32,6 +32,7 @@
     "ethereumjs-util": "^4.3.0",
     "ethereumjs-wallet": "^0.5.0",
     "prompt-sync": "^4.0.4",
+    "rlp": "^2.0.0",
     "yargs": "^4.3.1"
   },
   "yargs": {

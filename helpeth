@@ -11,6 +11,7 @@ var fakeEthTx = require('ethereumjs-tx/fake')
 var BN = ethUtil.BN
 var ethHDKey = require('ethereumjs-wallet/hdkey')
 var bip39 = require('bip39')
+var RLP = require('rlp')
 
 var yargs = require('yargs')
   .usage('Usage: $0 [command]')
@@ -54,6 +55,7 @@ var yargs = require('yargs')
   .command('bip32Details <path>', 'Print key details for a given path')
   .command('addressDetails <address>', 'Print details about an address')
   .command('unitConvert <value> <from> <to>', 'Convert between Ethereum units')
+  .command('rlpInspect <rlp>', 'Inspect RLP encoded data')
   .strict()
   .version()
   .showHelpOnFail(false, 'Specify --help for available options')
@@ -386,5 +388,32 @@ switch (command) {
 
     console.log('Path: ' + argv.path)
     printWalletDetails(wallet)
+    break
+
+  case 'rlpInspect':
+    function toReadable (val) {
+      var len = val.length
+
+      if (len === 20) {
+        return 'possibly an address'
+      }
+
+      if (len <= 32) {
+        return new ethUtil.BN(val).toString(10)
+      }
+    }
+
+    var rlp = RLP.decode(argv.rlp)
+
+    console.log('The RLP encoded input consists of the following fields:')
+    for (var i = 0; i < rlp.length; i++) {
+      var item = rlp[i]
+      var detail = toReadable(item)
+      if (detail) {
+        console.log('  ' + ethUtil.bufferToHex(item) + ' (' + detail + ')')
+      } else {
+        console.log('  ' + ethUtil.bufferToHex(item))
+      }
+    }
     break
 }
