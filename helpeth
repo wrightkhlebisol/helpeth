@@ -37,7 +37,7 @@ var yargs = require('yargs')
   .command('signMessage <message>', 'Sign a message')
   .command('createTx <nonce> <to> <value> <data> <gasLimit> <gasPrice>', 'Sign a transaction')
   .command('parseTx <tx>', 'Parse raw transaction')
-  .command('keyGenerate [format]', 'Generate new key')
+  .command('keyGenerate [format] [icapdirect]', 'Generate new key')
   .command('keyConvert', 'Convert a key to V3 keystore format')
   .command('keyDetails', 'Print key details')
   .command('addressDetails <address>', 'Print details about an address')
@@ -122,7 +122,7 @@ var wallet
 
 switch (command) {
   case 'keyGenerate':
-    wallet = ethWallet.generate()
+    wallet = ethWallet.generate(argv.icapdirect === 'true')
 
     switch (argv.format) {
       case 'v3':
