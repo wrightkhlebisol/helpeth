@@ -166,7 +166,11 @@ switch (command) {
 
   case 'createTx':
     function shadyparser (input) {
-      return ethUtil.bufferToHex(ethUtil.toBuffer(input))
+      if (ethUtil.isHexPrefixed(input)) {
+        return input
+      } else {
+        return '0x' + new ethUtil.BN(input, 10).toString(16)
+      }
     }
 
     // FIXME: validate inputs
