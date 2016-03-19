@@ -6,6 +6,7 @@ var ethWallet = require('ethereumjs-wallet')
 var ethICAP = require('ethereumjs-icap')
 var ethUtil = require('ethereumjs-util')
 var ethTx = require('ethereumjs-tx')
+var fakeEthTx = require('ethereumjs-tx/fake')
 
 var yargs = require('yargs')
   .usage('Usage: $0 [command]')
@@ -35,6 +36,7 @@ var yargs = require('yargs')
   .global([ 'p', 'k', 'password', 'password-prompt', 'show-private' ])
   .command('signMessage <message>', 'Sign a message')
   .command('createTx <nonce> <to> <value> <data> <gasLimit> <gasPrice>', 'Sign a transaction')
+  .command('parseTx <tx>', 'Parse raw transaction')
   .command('keyGenerate [format]', 'Generate new key')
   .command('keyConvert', 'Convert a key to V3 keystore format')
   .command('keyDetails', 'Print key details')
@@ -203,6 +205,23 @@ switch (command) {
     tx.sign(wallet.getPrivateKey())
 
     console.log('The signed transaction: ' + ethUtil.bufferToHex(tx.serialize()))
+    break
+
+  case 'parseTx':
+    /* eslint-disable new-cap */
+    var tx = new fakeEthTx(argv.tx)
+    var value = new ethUtil.BN(tx.value).toString(10)
+    var gasLimit = new ethUtil.BN(tx.gasLimit).toString(10)
+    var gasPrice = new ethUtil.BN(tx.gasPrice).toString(10)
+    /* eslint-enable new-cap */
+
+    console.log('Signed by: ' + ethUtil.bufferToHex(tx.from))
+    console.log('Nonce: ' + ethUtil.bufferToHex(tx.nonce))
+    console.log('To: ' + ethUtil.bufferToHex(tx.to))
+    console.log('Value: ' + value)
+    console.log('Data: ' + ethUtil.bufferToHex(tx.data))
+    console.log('Gas limit: ' + gasLimit)
+    console.log('Gas price: ' + gasPrice)
     break
 
   case 'addressDetails':
