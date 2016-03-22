@@ -22,10 +22,11 @@ Commands:
   createTx <nonce> <to> <value> <data>      Sign a transaction
   <gasLimit> <gasPrice>
   parseTx <tx>                              Parse raw transaction
-  keyGenerate [format]                      Generate new key
+  keyGenerate [format] [icapdirect]         Generate new key
   keyConvert                                Convert a key to V3 keystore format
   keyDetails                                Print key details
   addressDetails <address>                  Print details about an address
+  unitConvert <value> <from> <to>           Convert between Ethereum units
 
 Options:
   -p, --private      Private key as a hex string                        [string]
