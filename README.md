@@ -4,9 +4,13 @@ Help (with) Ethereum. Purists' commandline tool for key and transaction manageme
 
 It uses [ethereumjs-wallet](https://github.com/axic/ethereumjs-wallet) and [ethereumjs-tx](https://github.com/ethereumjs/ethereumjs-tx).
 
-## How to use
+## Installation
 
 Install it as a global package: `npm install -g helpeth`
+
+It uses [secp256k1](https://github.com/cryptocoinjs/secp256k1-node) for the cryptography. Make sure to have either *OpenSSL* or *GMP* installed.
+
+## How to use
 
 See the help output with `helpeth --help`:
 
