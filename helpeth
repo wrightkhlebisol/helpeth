@@ -4,6 +4,7 @@ var fs = require('fs')
 var prompt = require('prompt-sync')()
 var ethWallet = require('ethereumjs-wallet')
 var ethICAP = require('ethereumjs-icap')
+var ethUnits = require('ethereumjs-units')
 var ethUtil = require('ethereumjs-util')
 var ethTx = require('ethereumjs-tx')
 var fakeEthTx = require('ethereumjs-tx/fake')
@@ -41,6 +42,7 @@ var yargs = require('yargs')
   .command('keyConvert', 'Convert a key to V3 keystore format')
   .command('keyDetails', 'Print key details')
   .command('addressDetails <address>', 'Print details about an address')
+  .command('unitConvert <value> <from> <to>', 'Convert between Ethereum units')
   .strict()
   .version()
   .showHelpOnFail(false, 'Specify --help for available options')
@@ -167,6 +169,14 @@ switch (command) {
     break
 
   case 'createTx':
+    function convertValue (value) {
+      if (/^\d+ \w+$/i.test(value)) {
+        return ethUnits.lazyConvert(value, 'wei').split(' ')[0]
+      } else {
+        return value
+      }
+    }
+
     function shadyparser (input) {
       if (ethUtil.isHexPrefixed(input)) {
         return input
@@ -178,10 +188,10 @@ switch (command) {
     // FIXME: validate inputs
     var nonce = shadyparser(argv.nonce)
     var to = shadyparser(argv.to)
-    var value = shadyparser(argv.value)
+    var value = shadyparser(convertValue(argv.value))
     var data = shadyparser(argv.data)
     var gasLimit = shadyparser(argv.gasLimit)
-    var gasPrice = shadyparser(argv.gasPrice)
+    var gasPrice = shadyparser(convertValue(argv.gasPrice))
 
     console.log('Nonce: ' + nonce)
     console.log('To: ' + to)
@@ -218,10 +228,10 @@ switch (command) {
     console.log('Signed by: ' + ethUtil.bufferToHex(tx.from))
     console.log('Nonce: ' + ethUtil.bufferToHex(tx.nonce))
     console.log('To: ' + ethUtil.bufferToHex(tx.to))
-    console.log('Value: ' + value)
+    console.log('Value: ' + value + ' (' + ethUnits.convert(value, 'wei', 'eth') + ' ETH)')
     console.log('Data: ' + ethUtil.bufferToHex(tx.data))
     console.log('Gas limit: ' + gasLimit)
-    console.log('Gas price: ' + gasPrice)
+    console.log('Gas price: ' + gasPrice + ' (' + ethUnits.convert(gasPrice, 'wei', 'gwei') + ' Gwei)')
     break
 
   case 'addressDetails':
@@ -243,5 +253,10 @@ switch (command) {
     }
 
     printAddressDetails(address)
+    break
+
+  case 'unitConvert':
+    var ret = ethUnits.convert(argv.value, argv.from, argv.to)
+    console.log(argv.value + ' ' + argv.from + ' equals to ' + ret + ' ' + argv.to)
     break
 }
