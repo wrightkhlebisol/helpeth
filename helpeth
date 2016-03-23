@@ -9,6 +9,8 @@ var ethUtil = require('ethereumjs-util')
 var ethTx = require('ethereumjs-tx')
 var fakeEthTx = require('ethereumjs-tx/fake')
 var BN = ethUtil.BN
+var ethHDKey = require('ethereumjs-wallet/hdkey')
+var bip39 = require('bip39')
 
 var yargs = require('yargs')
   .usage('Usage: $0 [command]')
@@ -35,6 +37,10 @@ var yargs = require('yargs')
     describe: 'Show private key details',
     type: 'boolean'
   })
+  .option('mnemonic', {
+    describe: 'Mnemonic for HD key derivation',
+    type: 'string'
+  })
   .global([ 'p', 'k', 'password', 'password-prompt', 'show-private' ])
   .command('signMessage <message>', 'Sign a message')
   .command('verifySig <hash> <sig>', 'Verify signature')
@@ -44,6 +50,7 @@ var yargs = require('yargs')
   .command('keyGenerate [format] [icapdirect]', 'Generate new key')
   .command('keyConvert', 'Convert a key to V3 keystore format')
   .command('keyDetails', 'Print key details')
+  .command('hdKeyDetails <path>', 'Print key details for a given path')
   .command('addressDetails <address>', 'Print details about an address')
   .command('unitConvert <value> <from> <to>', 'Convert between Ethereum units')
   .strict()
@@ -310,5 +317,18 @@ switch (command) {
   case 'unitConvert':
     var ret = ethUnits.convert(argv.value, argv.from, argv.to)
     console.log(argv.value + ' ' + argv.from + ' equals to ' + ret + ' ' + argv.to)
+    break
+
+  case 'hdKeyDetails':
+    if (!argv.mnemonic) {
+      abort('A mnemonic is mandatory for this operation')
+    }
+
+    var hdkey = ethHDKey.fromMasterSeed(bip39.mnemonicToSeed(argv.mnemonic))
+
+    var wallet = ethWallet.fromExtendedPrivateKey(hdkey.derivePath(argv.path).privateExtendedKey())
+
+    console.log('Path: ' + argv.path)
+    printWalletDetails(wallet)
     break
 }
