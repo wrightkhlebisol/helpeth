@@ -120,6 +120,16 @@ function saveWalletV3 (wallet) {
   console.log('Key saved as ' + filename)
 }
 
+function printMaxCost (tx) {
+  var value = new ethUtil.BN(tx.value, 16)
+  var gasLimit = new ethUtil.BN(tx.gasLimit, 10)
+  var gasPrice = new ethUtil.BN(tx.gasPrice, 10)
+  var cost = gasPrice.mul(gasLimit)
+
+  console.log('Potential total transaction cost: ' + ethUnits.convert(cost, 'wei', 'eth') + ' ETH')
+  console.log('Minimum required account balance: ' + ethUnits.convert(value.add(cost), 'wei', 'eth') + ' ETH')
+}
+
 var wallet
 
 switch (command) {
@@ -214,6 +224,8 @@ switch (command) {
     wallet = loadWallet()
     tx.sign(wallet.getPrivateKey())
 
+    printMaxCost(tx)
+
     console.log('The signed transaction: ' + ethUtil.bufferToHex(tx.serialize()))
     break
 
@@ -232,6 +244,8 @@ switch (command) {
     console.log('Data: ' + ethUtil.bufferToHex(tx.data))
     console.log('Gas limit: ' + gasLimit)
     console.log('Gas price: ' + gasPrice + ' (' + ethUnits.convert(gasPrice, 'wei', 'gwei') + ' Gwei)')
+
+    printMaxCost(tx)
     break
 
   case 'addressDetails':
