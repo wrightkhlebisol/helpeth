@@ -37,6 +37,8 @@ var yargs = require('yargs')
   })
   .global([ 'p', 'k', 'password', 'password-prompt', 'show-private' ])
   .command('signMessage <message>', 'Sign a message')
+  .command('verifySig <hash> <sig>', 'Verify signature')
+  .command('verifySigParams <hash> <r> <s> <v>', 'Verify signature parameters')
   .command('createTx <nonce> <to> <value> <data> <gasLimit> <gasPrice>', 'Sign a transaction')
   .command('parseTx <tx>', 'Parse raw transaction')
   .command('keyGenerate [format] [icapdirect]', 'Generate new key')
@@ -131,6 +133,25 @@ function printMaxCost (tx) {
   console.log('Minimum required account balance: ' + ethUnits.convert(value.add(cost), 'wei', 'eth') + ' ETH')
 }
 
+const N_DIV_2 = new BN('7fffffffffffffffffffffffffffffff5d576e7357a4501ddfe92f46681b20a0', 16)
+
+function printSigDetails (hash, r, s, v) {
+  console.log('Message hash (keccak): ' + hash)
+  var pubKey = ethUtil.ecrecover(
+    ethUtil.toBuffer(hash),
+    ethUtil.toBuffer(parseInt(v)),
+    ethUtil.toBuffer(r),
+    ethUtil.toBuffer(s)
+  )
+
+  if (new BN(s).cmp(N_DIV_2) === 1) {
+    console.log('Invalid signature on Homestead and later versions.')
+  }
+
+  console.log('Signed by:')
+  printAddressDetails(ethUtil.bufferToHex(ethUtil.publicToAddress(pubKey)))
+}
+
 var wallet
 
 switch (command) {
@@ -177,6 +198,22 @@ switch (command) {
     sig = ethUtil.bufferToHex(Buffer.concat([ sig.r, sig.s, ethUtil.toBuffer(sig.v - 27) ]))
 
     console.log('The signature: ' + sig)
+    break
+
+  case 'verifySig':
+    var sig = ethUtil.toBuffer(argv.sig)
+
+    var v = sig[64]
+    // support both versions of `eth_sign` responses
+    if (v < 27) {
+      v += 27
+    }
+
+    printSigDetails(argv.hash, sig.slice(0, 32), sig.slice(32, 64), v)
+    break
+
+  case 'verifySigParams':
+    printSigDetails(argv.hash, argv.r, argv.s, argv.v)
     break
 
   case 'createTx':
