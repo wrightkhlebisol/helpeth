@@ -8,6 +8,7 @@ var ethUnits = require('ethereumjs-units')
 var ethUtil = require('ethereumjs-util')
 var ethTx = require('ethereumjs-tx')
 var fakeEthTx = require('ethereumjs-tx/fake')
+var BN = ethUtil.BN
 
 var yargs = require('yargs')
   .usage('Usage: $0 [command]')
@@ -121,9 +122,9 @@ function saveWalletV3 (wallet) {
 }
 
 function printMaxCost (tx) {
-  var value = new ethUtil.BN(tx.value, 16)
-  var gasLimit = new ethUtil.BN(tx.gasLimit, 10)
-  var gasPrice = new ethUtil.BN(tx.gasPrice, 10)
+  var value = new BN(tx.value, 16)
+  var gasLimit = new BN(tx.gasLimit, 10)
+  var gasPrice = new BN(tx.gasPrice, 10)
   var cost = gasPrice.mul(gasLimit)
 
   console.log('Potential total transaction cost: ' + ethUnits.convert(cost, 'wei', 'eth') + ' ETH')
@@ -191,7 +192,7 @@ switch (command) {
       if (ethUtil.isHexPrefixed(input)) {
         return input
       } else {
-        return '0x' + new ethUtil.BN(input, 10).toString(16)
+        return '0x' + new BN(input, 10).toString(16)
       }
     }
 
@@ -232,9 +233,9 @@ switch (command) {
   case 'parseTx':
     /* eslint-disable new-cap */
     var tx = new fakeEthTx(argv.tx)
-    var value = new ethUtil.BN(tx.value).toString(10)
-    var gasLimit = new ethUtil.BN(tx.gasLimit).toString(10)
-    var gasPrice = new ethUtil.BN(tx.gasPrice).toString(10)
+    var value = new BN(tx.value).toString(10)
+    var gasLimit = new BN(tx.gasLimit).toString(10)
+    var gasPrice = new BN(tx.gasPrice).toString(10)
     /* eslint-enable new-cap */
 
     console.log('Signed by: ' + ethUtil.bufferToHex(tx.from))
