@@ -189,7 +189,6 @@ switch (command) {
     // NOTE: geth internally accepts any input and zero-pads it
     var msg = argv.message
     try {
-      fs.statSync(msg)
       msg = fs.readFileSync(msg)
       console.log('Input message: ' + msg)
       msg = ethUtil.sha3(msg)
