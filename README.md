@@ -19,12 +19,17 @@ Usage: helpeth [command]
 
 Commands:
   signMessage <message>                     Sign a message
+  verifySig <hash> <sig>                    Verify signature
+  verifySigParams <hash> <r> <s> <v>        Verify signature parameters
   createTx <nonce> <to> <value> <data>      Sign a transaction
   <gasLimit> <gasPrice>
+  assembleTx <nonce> <to> <value> <data>    Assemble a transaction from its
+  <gasLimit> <gasPrice> <v> <r> <s>         components
   parseTx <tx>                              Parse raw transaction
   keyGenerate [format] [icapdirect]         Generate new key
   keyConvert                                Convert a key to V3 keystore format
   keyDetails                                Print key details
+  bip32Details <path>                       Print key details for a given path
   addressDetails <address>                  Print details about an address
   unitConvert <value> <from> <to>           Convert between Ethereum units
 
@@ -34,6 +39,7 @@ Options:
   --password-prompt  Prompt for the private key password               [boolean]
   -k, --keyfile      Encoded key file                                   [string]
   --show-private     Show private key details                          [boolean]
+  --mnemonic         Mnemonic for HD key derivation                     [string]
   --version          Show version number                               [boolean]
   --help             Show help                                         [boolean]
 ```
