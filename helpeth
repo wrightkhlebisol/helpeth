@@ -320,9 +320,13 @@ switch (command) {
     break
 
   case 'hdKeyDetails':
-    if (!argv.mnemonic) {
-      abort('A mnemonic is mandatory for this operation')
-    }
+    var hdkey
+    if (argv.mnemonic)
+      hdkey = ethHDKey.fromMasterSeed(bip39.mnemonicToSeed(argv.mnemonic))
+    else if (argv.private)
+      hdkey = ethHDKey.fromExtendedKey(argv.private)
+    else
+      abort('A mnemonic or extended key is mandatory for this operation')
 
     var hdkey = ethHDKey.fromMasterSeed(bip39.mnemonicToSeed(argv.mnemonic))
 
