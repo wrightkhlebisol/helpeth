@@ -46,7 +46,7 @@ var yargs = require('yargs')
   .command('verifySig <hash> <sig>', 'Verify signature')
   .command('verifySigParams <hash> <r> <s> <v>', 'Verify signature parameters')
   .command('createTx <nonce> <to> <value> <data> <gasLimit> <gasPrice>', 'Sign a transaction')
-  .command('createRawTx <nonce> <to> <value> <data> <gasLimit> <gasPrice> <v> <r> <s>', 'Assemble a transaction from its components')
+  .command('assembleTx <nonce> <to> <value> <data> <gasLimit> <gasPrice> <v> <r> <s>', 'Assemble a transaction from its components')
   .command('parseTx <tx>', 'Parse raw transaction')
   .command('keyGenerate [format] [icapdirect]', 'Generate new key')
   .command('keyConvert', 'Convert a key to V3 keystore format')
@@ -279,7 +279,7 @@ switch (command) {
     console.log('The signed transaction: ' + ethUtil.bufferToHex(tx.serialize()))
     break
 
-  case 'createRawTx':
+  case 'assembleTx':
     // FIXME: validate inputs
     var nonce = shadyparser(argv.nonce)
     var to = shadyparser(argv.to)
