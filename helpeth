@@ -164,6 +164,22 @@ function printSigDetails (hash, r, s, v) {
   printAddressDetails(ethUtil.bufferToHex(ethUtil.publicToAddress(pubKey)))
 }
 
+function convertValue (value) {
+  if (/^\d+ \w+$/i.test(value)) {
+    return ethUnits.lazyConvert(value, 'wei').split(' ')[0]
+  } else {
+    return value
+  }
+}
+
+function shadyparser (input) {
+  if (ethUtil.isHexPrefixed(input)) {
+    return input
+  } else {
+    return '0x' + new BN(input, 10).toString(16)
+  }
+}
+
 var wallet
 
 switch (command) {
@@ -229,22 +245,6 @@ switch (command) {
     break
 
   case 'createTx':
-    function convertValue (value) {
-      if (/^\d+ \w+$/i.test(value)) {
-        return ethUnits.lazyConvert(value, 'wei').split(' ')[0]
-      } else {
-        return value
-      }
-    }
-
-    function shadyparser (input) {
-      if (ethUtil.isHexPrefixed(input)) {
-        return input
-      } else {
-        return '0x' + new BN(input, 10).toString(16)
-      }
-    }
-
     // FIXME: validate inputs
     var nonce = shadyparser(argv.nonce)
     var to = shadyparser(argv.to)
@@ -280,22 +280,6 @@ switch (command) {
     break
 
   case 'createRawTx':
-    function convertValue (value) {
-      if (/^\d+ \w+$/i.test(value)) {
-        return ethUnits.lazyConvert(value, 'wei').split(' ')[0]
-      } else {
-        return value
-      }
-    }
-
-    function shadyparser (input) {
-      if (ethUtil.isHexPrefixed(input)) {
-        return input
-      } else {
-        return '0x' + new BN(input, 10).toString(16)
-      }
-    }
-
     // FIXME: validate inputs
     var nonce = shadyparser(argv.nonce)
     var to = shadyparser(argv.to)
