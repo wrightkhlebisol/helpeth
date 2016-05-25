@@ -218,13 +218,13 @@ switch (command) {
     var msg = argv.message
     try {
       msg = fs.readFileSync(msg)
-      console.log('Input message: ' + msg)
-      msg = ethUtil.sha3(msg)
     } catch (e) {
-      msg = ethUtil.sha3(ethUtil.toBuffer(argv.message))
-      console.log('Input message: ' + argv.message)
+      msg = ethUtil.toBuffer(argv.message)
     }
 
+    console.log('Input message: ' + ethUtil.bufferToHex(msg))
+
+    msg = ethUtil.sha3(msg)
     console.log('Message hash (Keccak): ' + ethUtil.bufferToHex(msg))
 
     var sig = ethUtil.ecsign(msg, wallet.getPrivateKey())
