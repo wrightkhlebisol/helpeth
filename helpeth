@@ -328,8 +328,6 @@ switch (command) {
     else
       abort('A mnemonic or extended key is mandatory for this operation')
 
-    var hdkey = ethHDKey.fromMasterSeed(bip39.mnemonicToSeed(argv.mnemonic))
-
     var wallet = ethWallet.fromExtendedPrivateKey(hdkey.derivePath(argv.path).privateExtendedKey())
 
     console.log('Path: ' + argv.path)
