@@ -50,7 +50,7 @@ var yargs = require('yargs')
   .command('keyGenerate [format] [icapdirect]', 'Generate new key')
   .command('keyConvert', 'Convert a key to V3 keystore format')
   .command('keyDetails', 'Print key details')
-  .command('hdKeyDetails <path>', 'Print key details for a given path')
+  .command('bip32Details <path>', 'Print key details for a given path')
   .command('addressDetails <address>', 'Print details about an address')
   .command('unitConvert <value> <from> <to>', 'Convert between Ethereum units')
   .strict()
@@ -319,7 +319,7 @@ switch (command) {
     console.log(argv.value + ' ' + argv.from + ' equals to ' + ret + ' ' + argv.to)
     break
 
-  case 'hdKeyDetails':
+  case 'bip32Details':
     var hdkey
     if (argv.mnemonic)
       hdkey = ethHDKey.fromMasterSeed(bip39.mnemonicToSeed(argv.mnemonic))
