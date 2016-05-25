@@ -97,7 +97,11 @@ function loadWallet () {
 
   var wallet
   if (argv.private) {
-    wallet = ethWallet.fromPrivateKey(ethUtil.toBuffer(argv.private))
+    try {
+      wallet = ethWallet.fromExtendedPrivateKey(argv.private)
+    } catch (e) {
+      wallet = ethWallet.fromPrivateKey(ethUtil.toBuffer(argv.private))
+    }
   } else if (argv.keyfile) {
     var keyfile = fs.readFileSync(argv.keyfile).toString()
     var password = ensurePassword()
