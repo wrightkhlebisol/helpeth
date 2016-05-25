@@ -46,6 +46,7 @@ var yargs = require('yargs')
   .command('verifySig <hash> <sig>', 'Verify signature')
   .command('verifySigParams <hash> <r> <s> <v>', 'Verify signature parameters')
   .command('createTx <nonce> <to> <value> <data> <gasLimit> <gasPrice>', 'Sign a transaction')
+  .command('createRawTx <nonce> <to> <value> <data> <gasLimit> <gasPrice> <v> <r> <s>', 'Assemble a transaction from its components')
   .command('parseTx <tx>', 'Parse raw transaction')
   .command('keyGenerate [format] [icapdirect]', 'Generate new key')
   .command('keyConvert', 'Convert a key to V3 keystore format')
@@ -272,6 +273,63 @@ switch (command) {
 
     wallet = loadWallet()
     tx.sign(wallet.getPrivateKey())
+
+    printMaxCost(tx)
+
+    console.log('The signed transaction: ' + ethUtil.bufferToHex(tx.serialize()))
+    break
+
+  case 'createRawTx':
+    function convertValue (value) {
+      if (/^\d+ \w+$/i.test(value)) {
+        return ethUnits.lazyConvert(value, 'wei').split(' ')[0]
+      } else {
+        return value
+      }
+    }
+
+    function shadyparser (input) {
+      if (ethUtil.isHexPrefixed(input)) {
+        return input
+      } else {
+        return '0x' + new BN(input, 10).toString(16)
+      }
+    }
+
+    // FIXME: validate inputs
+    var nonce = shadyparser(argv.nonce)
+    var to = shadyparser(argv.to)
+    var value = shadyparser(convertValue(argv.value))
+    var data = shadyparser(argv.data)
+    var gasLimit = shadyparser(argv.gasLimit)
+    var gasPrice = shadyparser(convertValue(argv.gasPrice))
+    var v = shadyparser(argv.v)
+    var r = shadyparser(argv.r)
+    var s = shadyparser(argv.s)
+
+    console.log('Nonce: ' + nonce)
+    console.log('To: ' + to)
+    console.log('Value: ' + value)
+    console.log('Data: ' + data)
+    console.log('Gas limit: ' + gasLimit)
+    console.log('Gas price: ' + gasPrice)
+    console.log('Signature v: ' + v)
+    console.log('Signature r: ' + r)
+    console.log('Signature s: ' + s)
+
+    /* eslint-disable new-cap */
+    var tx = new fakeEthTx({
+      nonce: nonce,
+      to: to,
+      value: value,
+      data: data,
+      gasLimit: gasLimit,
+      gasPrice: gasPrice,
+      v: v,
+      r: r,
+      s: s
+    })
+    /* eslint-enable new-cap */
 
     printMaxCost(tx)
 
