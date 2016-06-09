@@ -1,5 +1,8 @@
 # helpeth
 
+[![NPM Package](https://img.shields.io/npm/v/helpeth.svg?style=flat-square)](https://www.npmjs.org/package/helpeth)
+[![Gitter](https://img.shields.io/gitter/room/ethereum/ethereumjs-lib.svg?style=flat-square)](https://gitter.im/ethereum/ethereumjs-lib)
+
 Help (with) Ethereum. Purists' commandline tool for key and transaction management.
 
 It uses [ethereumjs-wallet](https://github.com/axic/ethereumjs-wallet) and [ethereumjs-tx](https://github.com/ethereumjs/ethereumjs-tx).
