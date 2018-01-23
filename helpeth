@@ -56,6 +56,7 @@ var yargs = require('yargs')
   .command('addressDetails <address>', 'Print details about an address')
   .command('unitConvert <value> <from> <to>', 'Convert between Ethereum units')
   .command('rlpInspect <rlp>', 'Inspect RLP encoded data')
+  .command('keccak256 <data>', 'Create Keccak-256 hash of the supplied data')
   .strict()
   .version()
   .showHelpOnFail(false, 'Specify --help for available options')
@@ -415,5 +416,16 @@ switch (command) {
         console.log('  ' + ethUtil.bufferToHex(item))
       }
     }
+    break
+
+  case 'keccak256':
+    var data
+    try {
+      data = fs.readFileSync(argv.data)
+    } catch (e) {
+      data = ethUtil.toBuffer(argv.data)
+    }
+    console.log('Input data: ' + ethUtil.bufferToHex(data))
+    console.log('Data hash: ' + ethUtil.sha3(data).toString('hex'))
     break
 }
