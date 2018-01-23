@@ -94,7 +94,8 @@ The signature: 0x167760997a69e225c0668e6761cd20cac70f3a6ace29fe2d287c3003daf6972
 ### Sign a transaction
 
 ```
-$ helpeth --password 'Use --password-prompt instead for security' --keyfile UTC--2016-03-17T19-06-57.064Z--15f2f3e0f2d74ea7b185fc12f24cb4f402cc96d0 createTx 0x1 0xe0defb92145fef3c3a945637705fafd3aa74a241 "1 eth" 0x0 21000 "20 Gwei"
+$ helpeth --password 'Use --password-prompt instead for security' --keyfile UTC--2016-03-17T19-06-57.064Z--15f2f3e0f2d74ea7b185fc12f24cb4f402cc96d0 createTx 0 0x1 0xe0defb92145fef3c3a945637705fafd3aa74a241 "1 eth" 0x0 21000 "20 Gwei"
+Chain: 0x0
 Nonce: 0x1
 To: 0xe0defb92145fef3c3a945637705fafd3aa74a241
 Value: 0xde0b6b3a7640000
@@ -109,6 +110,7 @@ The signed transaction: 0xf86c018504a817c80082520894e0defb92145fef3c3a945637705f
 ```
 $ ./helpeth parseTx 0xf86c018504a817c80082520894e0defb92145fef3c3a945637705fafd3aa74a241880de0b6b3a7640000001ba01893f2731799dc436da31e092f75bece7bfbdb4942b60b106d61ec06f143aed2a075548818010ccd7fd3e3dd6172f072d4dec19c8956c735bdd34b4aea809ff6be
 Signed by: 0x15f2f3e0f2d74ea7b185fc12f24cb4f402cc96d0
+Chain: 0x00
 Nonce: 0x01
 To: 0xe0defb92145fef3c3a945637705fafd3aa74a241
 Value: 1000000000000000000 (1 ETH)
