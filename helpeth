@@ -121,6 +121,13 @@ function printAddressDetails (address) {
   console.log('ICAP: ' + ethICAP.fromAddress(address, true, true))
 }
 
+function printWalletDetailsJson (wallet, showPrivate) {
+  console.log(JSON.stringify({
+    address: wallet.getPublicKeyString(),
+    privateKey: wallet.getPrivateKeyString()
+  }))
+}
+
 function printWalletDetails (wallet, showPrivate) {
   printAddressDetails(wallet.getAddressString())
   console.log('Public key: ' + wallet.getPublicKeyString())
@@ -194,7 +201,9 @@ switch (command) {
         printWalletDetails(wallet)
         saveWalletV3(wallet)
         break
-
+      case 'json':
+        printWalletDetailsJson(wallet)
+	break
       case 'raw':
       default:
         printWalletDetails(wallet, true)
