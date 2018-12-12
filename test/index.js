@@ -43,7 +43,7 @@ tape('CLI', function (t) {
     spt.stdout.match(/Address \(checksum\): 0x/)
     spt.stdout.match(/ICAP: /)
     spt.stdout.match(/Public key: 0x/)
-    spt.stdout.match(/Key saved as UTC\-\-/)
+    spt.stdout.match(/Key saved as UTC/)
     spt.end()
   })
 
@@ -54,7 +54,7 @@ tape('CLI', function (t) {
     spt.stdout.match(/ICAP: /)
     spt.stdout.match(/Public key: 0x/)
     spt.stdout.match(/Private key: 0x/)
-    spt.stdout.match(/Key saved as UTC\-\-/)
+    spt.stdout.match(/Key saved as UTC/)
     spt.end()
   })
 
