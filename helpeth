@@ -134,7 +134,7 @@ function saveWalletV3 (wallet) {
   var v3 = wallet.toV3String(password)
   var filename = wallet.getV3Filename()
 
-  fs.writeFileSync(filename, new Buffer(v3))
+  fs.writeFileSync(filename, Buffer.from(v3))
   console.log('Key saved as ' + filename)
 }
 
@@ -227,7 +227,7 @@ switch (command) {
 
     console.log('Input message: ' + ethUtil.bufferToHex(msg))
 
-    msg = ethUtil.sha3(msg)
+    msg = ethUtil.keccak256(msg)
     console.log('Message hash (Keccak): ' + ethUtil.bufferToHex(msg))
 
     var sig = ethUtil.ecsign(msg, wallet.getPrivateKey())
@@ -426,6 +426,6 @@ switch (command) {
       data = ethUtil.toBuffer(argv.data)
     }
     console.log('Input data: ' + ethUtil.bufferToHex(data))
-    console.log('Data hash: ' + ethUtil.sha3(data).toString('hex'))
+    console.log('Data hash: ' + ethUtil.keccak256(data).toString('hex'))
     break
 }
