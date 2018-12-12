@@ -52,6 +52,7 @@ var yargs = require('yargs')
   .command('keyGenerate [format] [icapdirect]', 'Generate new key')
   .command('keyConvert', 'Convert a key to V3 keystore format')
   .command('keyDetails', 'Print key details')
+  .command('vanityKeyGenerate <pattern>', 'Generate vanity key')
   .command('bip32Details <path>', 'Print key details for a given path')
   .command('addressDetails <address>', 'Print details about an address')
   .command('unitConvert <value> <from> <to>', 'Convert between Ethereum units')
@@ -187,7 +188,12 @@ var wallet
 
 switch (command) {
   case 'keyGenerate':
-    wallet = ethWallet.generate(argv.icapdirect === 'true')
+  case 'vanityKeyGenerate':
+    if (command === 'vanityKeyGenerate') {
+      wallet = ethWallet.generateVanityAddress(argv.pattern)
+    } else {
+      wallet = ethWallet.generate(argv.icapdirect === 'true')
+    }
 
     switch (argv.format) {
       case 'v3':

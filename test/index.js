@@ -101,4 +101,11 @@ tape('CLI', function (t) {
     spt.stdout.match(/Minimum required account balance: 0.000000000006001234 ETH/)
     spt.end()
   })
+
+  t.test('vanity key generation', function (st) {
+    var spt = spawn(st, './helpeth vanityKeyGenerate "^000"')
+    spt.stderr.empty()
+    spt.stdout.match(/Address: 0x000[0-9a-fA-f]{37}/)
+    spt.end()
+  })
 })
