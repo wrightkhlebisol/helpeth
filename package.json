@@ -1,6 +1,6 @@
 {
   "name": "helpeth",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Help (with) Ethereum. Purists' commandline tool for key and transaction management.",
   "bin": {
     "helpeth": "./helpeth"
