@@ -6,7 +6,7 @@
     "helpeth": "./helpeth"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "tape ./test/index.js"
   },
   "repository": {
     "type": "git",
@@ -34,6 +34,10 @@
     "prompt-sync": "^4.0.4",
     "rlp": "^2.0.0",
     "yargs": "^4.3.1"
+  },
+  "devDependencies": {
+    "tape": "^4.9.1",
+    "tape-spawn": "^1.4.2"
   },
   "yargs": {
     "parse-numbers": false
