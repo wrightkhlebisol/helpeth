@@ -134,7 +134,7 @@ function saveWalletV3 (wallet) {
   var v3 = wallet.toV3String(password)
   var filename = wallet.getV3Filename()
 
-  fs.writeFileSync(filename, new Buffer(v3))
+  fs.writeFileSync(filename, Buffer.from(v3))
   console.log('Key saved as ' + filename)
 }
 
