@@ -155,7 +155,7 @@ function printSigDetails (hash, r, s, v) {
   console.log('Message hash (keccak): ' + hash)
   var pubKey = ethUtil.ecrecover(
     ethUtil.toBuffer(hash),
-    ethUtil.toBuffer(parseInt(v)),
+    v,
     ethUtil.toBuffer(r),
     ethUtil.toBuffer(s)
   )
@@ -248,7 +248,7 @@ switch (command) {
   case 'verifySig':
     var sig = ethUtil.toBuffer(argv.sig)
 
-    var v = sig[64]
+    var v = parseInt(sig[64])
     // support both versions of `eth_sign` responses
     if (v < 27) {
       v += 27
@@ -258,7 +258,7 @@ switch (command) {
     break
 
   case 'verifySigParams':
-    printSigDetails(argv.hash, argv.r, argv.s, argv.v)
+    printSigDetails(argv.hash, argv.r, argv.s, parseInt(argv.v))
     break
 
   case 'createTx':
